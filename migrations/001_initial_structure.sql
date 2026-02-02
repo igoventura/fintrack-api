@@ -1,5 +1,5 @@
 -- schema created at https://dbdiagram.io/d/fintrack-6980c9a9bd82f5fce2609709
-CREATE TYPE IF NOT EXISTS"account_type" AS ENUM (
+CREATE TYPE "account_type" AS ENUM (
   'bank',
   'cash',
   'credit_card',
@@ -7,7 +7,7 @@ CREATE TYPE IF NOT EXISTS"account_type" AS ENUM (
   'other'
 );
 
-CREATE TYPE IF NOT EXISTS"credit_card_brand" AS ENUM (
+CREATE TYPE "credit_card_brand" AS ENUM (
   'visa',
   'mastercard',
   'amex',
@@ -19,151 +19,141 @@ CREATE TYPE IF NOT EXISTS"credit_card_brand" AS ENUM (
   'unknown'
 );
 
-CREATE TYPE IF NOT EXISTS"transaction_type" AS ENUM (
+CREATE TYPE "transaction_type" AS ENUM (
   'credit',
   'debit',
   'transfer',
   'payment'
 );
 
-CREATE TABLE IF NOT EXISTS "tenants" (
+CREATE TABLE "tenants" (
   "id" UUID PRIMARY KEY DEFAULT (gen_random_uuid()),
   "name" TEXT NOT NULL,
-  "created_at" "TIMESTAMPTZ" NOT NULL DEFAULT (CURRENT_TIMESTAMP),
-  "updated_at" "TIMESTAMPTZ" NOT NULL DEFAULT (CURRENT_TIMESTAMP),
-  "deactivated_at" "TIMESTAMPTZ"
+  "created_at" TIMESTAMPTZ NOT NULL DEFAULT (CURRENT_TIMESTAMP),
+  "updated_at" TIMESTAMPTZ NOT NULL DEFAULT (CURRENT_TIMESTAMP),
+  "deactivated_at" TIMESTAMPTZ
 );
 
-CREATE TABLE IF NOT EXISTS "users" (
+CREATE TABLE "users" (
   "id" UUID PRIMARY KEY DEFAULT (gen_random_uuid()),
   "name" TEXT NOT NULL,
-  "email" "VARCHAR(254)" NOT NULL,
-  "created_at" "TIMESTAMPTZ" NOT NULL DEFAULT (CURRENT_TIMESTAMP),
-  "updated_at" "TIMESTAMPTZ" NOT NULL DEFAULT (CURRENT_TIMESTAMP),
-  "deactivated_at" "TIMESTAMPTZ"
+  "email" VARCHAR(254) NOT NULL,
+  "created_at" TIMESTAMPTZ NOT NULL DEFAULT (CURRENT_TIMESTAMP),
+  "updated_at" TIMESTAMPTZ NOT NULL DEFAULT (CURRENT_TIMESTAMP),
+  "deactivated_at" TIMESTAMPTZ
 );
 
-CREATE TABLE IF NOT EXISTS "users_tenants" (
+CREATE TABLE "users_tenants" (
   "user_id" UUID NOT NULL,
   "tenant_id" UUID NOT NULL,
-  "created_at" "TIMESTAMPTZ" NOT NULL DEFAULT (CURRENT_TIMESTAMP),
-  "updated_at" "TIMESTAMPTZ" NOT NULL DEFAULT (CURRENT_TIMESTAMP),
-  "deactivated_at" "TIMESTAMPTZ",
+  "created_at" TIMESTAMPTZ NOT NULL DEFAULT (CURRENT_TIMESTAMP),
+  "updated_at" TIMESTAMPTZ NOT NULL DEFAULT (CURRENT_TIMESTAMP),
+  "deactivated_at" TIMESTAMPTZ,
   PRIMARY KEY ("user_id", "tenant_id")
 );
 
-CREATE TABLE IF NOT EXISTS "accounts" (
+CREATE TABLE "accounts" (
   "id" UUID PRIMARY KEY DEFAULT (gen_random_uuid()),
   "tenant_id" UUID NOT NULL,
   "name" TEXT NOT NULL,
-  "initial_balance" "DECIMAL(15,2)" NOT NULL DEFAULT 0,
-  "color" "VARCHAR(9)" NOT NULL,
-  "currency" "VARCHAR(3)" NOT NULL,
-  "icon" "VARCHAR(256)" NOT NULL,
+  "initial_balance" DECIMAL(15,2) NOT NULL DEFAULT 0,
+  "color" VARCHAR(9) NOT NULL,
+  "currency" VARCHAR(3) NOT NULL,
+  "icon" VARCHAR(256) NOT NULL,
   "type" account_type NOT NULL,
-  "created_at" "TIMESTAMPTZ" NOT NULL DEFAULT (CURRENT_TIMESTAMP),
+  "created_at" TIMESTAMPTZ NOT NULL DEFAULT (CURRENT_TIMESTAMP),
   "created_by" UUID NOT NULL,
-  "updated_at" "TIMESTAMPTZ" NOT NULL DEFAULT (CURRENT_TIMESTAMP),
+  "updated_at" TIMESTAMPTZ NOT NULL DEFAULT (CURRENT_TIMESTAMP),
   "updated_by" UUID NOT NULL,
-  "deactivated_at" "TIMESTAMPTZ",
+  "deactivated_at" TIMESTAMPTZ,
   "deactivated_by" UUID
 );
 
-CREATE TABLE IF NOT EXISTS "credit_card_info" (
+CREATE TABLE "credit_card_info" (
   "id" UUID PRIMARY KEY DEFAULT (gen_random_uuid()),
   "account_id" UUID NOT NULL,
-  "last_four" "VARCHAR(4)" NOT NULL,
+  "last_four" VARCHAR(4) NOT NULL,
   "name" TEXT NOT NULL,
   "brand" credit_card_brand NOT NULL,
   "closing_date" DATE NOT NULL,
   "due_date" DATE NOT NULL,
-  "created_at" "TIMESTAMPTZ" NOT NULL DEFAULT (CURRENT_TIMESTAMP),
+  "created_at" TIMESTAMPTZ NOT NULL DEFAULT (CURRENT_TIMESTAMP),
   "created_by" UUID NOT NULL,
-  "updated_at" "TIMESTAMPTZ" NOT NULL DEFAULT (CURRENT_TIMESTAMP),
+  "updated_at" TIMESTAMPTZ NOT NULL DEFAULT (CURRENT_TIMESTAMP),
   "updated_by" UUID NOT NULL,
-  "deactivated_at" "TIMESTAMPTZ",
+  "deactivated_at" TIMESTAMPTZ,
   "deactivated_by" UUID
 );
 
-CREATE TABLE IF NOT EXISTS "tags" (
+CREATE TABLE "tags" (
   "id" UUID PRIMARY KEY DEFAULT (gen_random_uuid()),
   "tenant_id" UUID NOT NULL,
   "name" TEXT NOT NULL,
-  "deactivated_at" "TIMESTAMPTZ"
+  "deactivated_at" TIMESTAMPTZ
 );
 
-CREATE TABLE IF NOT EXISTS "categories" (
+CREATE TABLE "categories" (
   "id" UUID PRIMARY KEY DEFAULT (gen_random_uuid()),
   "parent_category" UUID,
   "tenant_id" UUID NOT NULL,
   "name" TEXT NOT NULL,
-  "deactivated_at" "TIMESTAMPTZ",
-  "color" "VARCHAR(9)" NOT NULL,
-  "icon" "VARCHAR(256)" NOT NULL
+  "deactivated_at" TIMESTAMPTZ,
+  "color" VARCHAR(9) NOT NULL,
+  "icon" VARCHAR(256) NOT NULL
 );
 
-CREATE TABLE IF NOT EXISTS "transactions" (
+CREATE TABLE "transactions" (
   "id" UUID PRIMARY KEY DEFAULT (gen_random_uuid()),
   "previous_sibling_transaction_id" UUID,
   "next_sibling_transaction_id" UUID,
   "tenant_id" UUID NOT NULL,
   "from_account_id" UUID NOT NULL,
   "to_account_id" UUID,
-  "amount" "NUMERIC(10,2)" NOT NULL,
-  "accrual_month" "VARCHAR(6)" NOT NULL,
+  "amount" NUMERIC(10,2) NOT NULL,
+  "accrual_month" VARCHAR(6) NOT NULL,
   "transaction_type" transaction_type NOT NULL,
   "category_id" UUID NOT NULL,
   "comments" TEXT,
   "due_date" DATE NOT NULL,
   "payment_date" DATE,
-  "created_at" "TIMESTAMPTZ" NOT NULL DEFAULT (CURRENT_TIMESTAMP),
+  "created_at" TIMESTAMPTZ NOT NULL DEFAULT (CURRENT_TIMESTAMP),
   "created_by" UUID NOT NULL,
-  "updated_at" "TIMESTAMPTZ" NOT NULL DEFAULT (CURRENT_TIMESTAMP),
+  "updated_at" TIMESTAMPTZ NOT NULL DEFAULT (CURRENT_TIMESTAMP),
   "updated_by" UUID NOT NULL,
-  "deactivated_at" "TIMESTAMPTZ",
+  "deactivated_at" TIMESTAMPTZ,
   "deactivated_by" UUID
 );
 
-CREATE TABLE IF NOT EXISTS "transactions_tags" (
+CREATE TABLE "transactions_tags" (
   "transaction_id" UUID NOT NULL,
   "tag_id" UUID NOT NULL,
   PRIMARY KEY ("transaction_id", "tag_id")
 );
 
-CREATE TABLE IF NOT EXISTS "transaction_attachments" (
-  "id" UUID PRIMARY KEY DEFAULT 'gen_random_uuid()',
+CREATE TABLE "transaction_attachments" (
+  "id" UUID PRIMARY KEY DEFAULT (gen_random_uuid()),
   "transaction_id" UUID NOT NULL,
   "name" TEXT NOT NULL,
   "path" TEXT NOT NULL,
-  "created_at" "TIMESTAMPTZ" NOT NULL DEFAULT (CURRENT_TIMESTAMP),
+  "created_at" TIMESTAMPTZ NOT NULL DEFAULT (CURRENT_TIMESTAMP),
   "created_by" UUID NOT NULL,
-  "updated_at" "TIMESTAMPTZ" NOT NULL DEFAULT (CURRENT_TIMESTAMP),
+  "updated_at" TIMESTAMPTZ NOT NULL DEFAULT (CURRENT_TIMESTAMP),
   "updated_by" UUID NOT NULL,
-  "deactivated_at" "TIMESTAMPTZ",
+  "deactivated_at" TIMESTAMPTZ,
   "deactivated_by" UUID
 );
 
-CREATE INDEX IF NOT EXISTS ON "users_tenants" USING BTREE ("tenant_id");
-
-CREATE INDEX IF NOT EXISTS ON "users_tenants" USING BTREE ("user_id");
-
-CREATE INDEX IF NOT EXISTS ON "accounts" USING BTREE ("tenant_id");
-
+CREATE INDEX ON "users_tenants" USING BTREE ("tenant_id");
+CREATE INDEX ON "users_tenants" USING BTREE ("user_id");
+CREATE INDEX ON "accounts" USING BTREE ("tenant_id");
 CREATE UNIQUE INDEX ON "credit_card_info" ("account_id", "deactivated_at");
-
-CREATE INDEX IF NOT EXISTS ON "credit_card_info" USING BTREE ("account_id");
-
-CREATE INDEX IF NOT EXISTS ON "tags" USING BTREE ("tenant_id");
-
-CREATE INDEX IF NOT EXISTS ON "categories" USING BTREE ("tenant_id");
-
-CREATE INDEX IF NOT EXISTS ON "transactions" USING BTREE ("tenant_id");
-
-CREATE INDEX IF NOT EXISTS ON "transactions" USING BTREE ("accrual_month");
-
-CREATE INDEX IF NOT EXISTS ON "transactions" ("transaction_type");
-
-CREATE INDEX IF NOT EXISTS ON "transaction_attachments" USING BTREE ("transaction_id");
+CREATE INDEX ON "credit_card_info" USING BTREE ("account_id");
+CREATE INDEX ON "tags" USING BTREE ("tenant_id");
+CREATE INDEX ON "categories" USING BTREE ("tenant_id");
+CREATE INDEX ON "transactions" USING BTREE ("tenant_id");
+CREATE INDEX ON "transactions" USING BTREE ("accrual_month");
+CREATE INDEX ON "transactions" ("transaction_type");
+CREATE INDEX ON "transaction_attachments" USING BTREE ("transaction_id");
 
 COMMENT ON COLUMN "accounts"."color" IS 'RGBA color (eg.: #ffAABB11';
 
@@ -232,17 +222,17 @@ ALTER TABLE "transaction_attachments" ADD FOREIGN KEY ("deactivated_by") REFEREN
 
 ---- create above / drop below ----
 
-DROP TABLE IF EXISTS "transaction_attachments";
-DROP TABLE IF EXISTS "transactions_tags";
-DROP TABLE IF EXISTS "transactions";
-DROP TABLE IF EXISTS "categories";
-DROP TABLE IF EXISTS "tags";
-DROP TABLE IF EXISTS "credit_card_info";
-DROP TABLE IF EXISTS "accounts";
-DROP TABLE IF EXISTS "users_tenants";
-DROP TABLE IF EXISTS "users";
-DROP TABLE IF EXISTS "tenants";
+DROP TABLE "transaction_attachments";
+DROP TABLE "transactions_tags";
+DROP TABLE "transactions";
+DROP TABLE "categories";
+DROP TABLE "tags";
+DROP TABLE "credit_card_info";
+DROP TABLE "accounts";
+DROP TABLE "users_tenants";
+DROP TABLE "users";
+DROP TABLE "tenants";
 
-DROP TYPE IF EXISTS "transaction_type";
-DROP TYPE IF EXISTS "credit_card_brand";
-DROP TYPE IF EXISTS "account_type";
+DROP TYPE "transaction_type";
+DROP TYPE "credit_card_brand";
+DROP TYPE "account_type";

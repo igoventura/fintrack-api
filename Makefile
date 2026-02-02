@@ -4,7 +4,7 @@ ifneq (,$(wildcard ./.env))
     export
 endif
 
-.PHONY: migrate rollback new-migration tidy test help
+.PHONY: migrate rollback new-migration tidy test help compose
 
 help:
 	@echo "Available commands:"
@@ -13,10 +13,15 @@ help:
 	@echo "  make new-migration  - Create a new migration file (usage: make new-migration name=xxx)"
 	@echo "  make tidy           - Run go mod tidy"
 	@echo "  make test           - Run all tests"
+	@echo "  make compose        - Run docker compose"
+
+compose:
+	@echo "Running docker compose..."
+	@docker compose up -d --build
 
 migrate:
 	@echo "Running migrations..."
-	@go run github.com/jackc/tern/v2 migrate -m migrations/
+	@go run github.com/jackc/tern/v2 migrate -m migrations/ -c migrations/tern.conf
 
 rollback:
 	@echo "Rolling back last migration..."
