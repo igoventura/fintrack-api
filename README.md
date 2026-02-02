@@ -7,37 +7,38 @@ FinTrack Core is a Go library providing the foundational domain models and persi
 ```
 fintrack-core/
 ├── domain/                # Business entities and repository interfaces
-│   └── account.go         # Account model and AccountRepository interface
 ├── migrations/            # SQL migrations for tern
-│   ├── tern.conf          # Tern configuration
-│   └── *.sql              # Migration files
 ├── internal/
-│   └── db/
-│       └── postgres/      # PostgreSQL implementation using pgx
-│           ├── db.go            # Connection pooling (pgxpool)
-│           ├── account_repo.go  # PG implementation of AccountRepository
-│           └── account_repo_test.go
+│   ├── db/
+│   │   └── postgres/      # PostgreSQL implementation using pgx
+│   └── tools/             # Tool dependencies (tools.go)
+├── .env                   # Environment variables (ignored)
+├── Makefile               # Automation tasks (migrate, test, etc.)
 ├── go.mod                 # Go module definition
 └── go.sum                 # Go module checksums
 ```
 
-## Migrations
+## Automation
 
-This project uses [tern](https://github.com/jackc/tern) for database migrations.
-
-### Configuration
-
-Edit `migrations/tern.conf` or use environment variables (`DB_HOST`, `DB_NAME`, etc.).
-
-### Commands
+A `Makefile` is provided for common development tasks. It automatically loads variables from a `.env` file if it exists.
 
 ```bash
-# Run migrations
-tern migrate -m migrations/
+# Run database migrations
+make migrate
 
 # Rollback last migration
-tern rollback -m migrations/
+make rollback
+
+# Run all tests
+make test
+
+# Run go mod tidy
+make tidy
 ```
+
+## Migrations
+
+This project uses [tern](https://github.com/jackc/tern) for database migrations. Configuration is handled via `migrations/tern.conf` which pulls from environment variables.
 
 ## Getting Started
 
@@ -54,7 +55,7 @@ go get github.com/igoventura/fintrack-core
 
 ### Usage
 
-Initialize the PostgreSQL connection and the repository:
+Initialize the PostgreSQL connection and the repository using environment variables (standard `.env` file supported via `godotenv`):
 
 ```go
 package main
@@ -62,15 +63,26 @@ package main
 import (
 	"context"
 	"log"
+	"os"
 
 	"github.com/igoventura/fintrack-core/internal/db/postgres"
+	"github.com/joho/godotenv"
 )
 
 func main() {
+	// Load .env file
+	if err := godotenv.Load(); err != nil {
+		log.Println("No .env file found, using system environment variables")
+	}
+
 	ctx := context.Background()
 	
 	// Initialize Connection Pool
-	connStr := "postgres://user:password@localhost:5432/fintrack?sslmode=disable"
+	connStr := os.Getenv("DATABASE_URL")
+	if connStr == "" {
+		log.Fatal("DATABASE_URL environment variable is required")
+	}
+
 	db, err := postgres.NewDB(ctx, connStr)
 	if err != nil {
 		log.Fatal(err)
@@ -87,6 +99,19 @@ func main() {
 	}
 	log.Printf("Found %d accounts", len(accounts))
 }
+```
+
+### Environment Variables
+
+Create a `.env` file in your root directory:
+
+```env
+DATABASE_URL=postgres://user:password@localhost:5432/fintrack?sslmode=disable
+DB_HOST=localhost
+DB_PORT=5432
+DB_NAME=fintrack
+DB_USER=postgres
+DB_PASSWORD=postgres
 ```
 
 ## Testing
