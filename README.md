@@ -4,21 +4,7 @@ FinTrack Core is a Go library providing the foundational domain models and persi
 
 ## Structure
 
-```
-fintrack-core/
-├── domain/                # Business entities and repository interfaces
-├── migrations/            # SQL migrations for tern
-├── internal/
-│   ├── db/
-│   │   └── postgres/      # PostgreSQL implementation using pgx
-│   └── tools/             # Tool dependencies (tools.go)
-├── .env                   # Environment variables (ignored)
-├── docker-compose.yml     # Infrastructure (Postgres + Migrations)
-├── Dockerfile.migrate     # Migration worker image definition
-├── Makefile               # Automation tasks
-├── go.mod                 # Go module definition
-└── go.sum                 # Go module checksums
-```
+See [PROJECT_STRUCTURE.md](file:///Users/igoventura/Developer/Personal/fintrack-core/PROJECT_STRUCTURE.md) for details on the codebase organization and architectural layers.
 
 ## Infrastructure
 
