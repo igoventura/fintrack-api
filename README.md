@@ -13,9 +13,20 @@ fintrack-core/
 │   │   └── postgres/      # PostgreSQL implementation using pgx
 │   └── tools/             # Tool dependencies (tools.go)
 ├── .env                   # Environment variables (ignored)
-├── Makefile               # Automation tasks (migrate, test, etc.)
+├── docker-compose.yml     # Infrastructure (Postgres + Migrations)
+├── Dockerfile.migrate     # Migration worker image definition
+├── Makefile               # Automation tasks
 ├── go.mod                 # Go module definition
 └── go.sum                 # Go module checksums
+```
+
+## Infrastructure
+
+The project includes a full Docker setup for development.
+
+```bash
+# Start Postgres and automatically run migrations
+make compose
 ```
 
 ## Automation
@@ -23,17 +34,17 @@ fintrack-core/
 A `Makefile` is provided for common development tasks. It automatically loads variables from a `.env` file if it exists.
 
 ```bash
-# Run database migrations
-make migrate
+# Infrastructure
+make compose        # Start DB and run migrations via Docker
 
-# Rollback last migration
-make rollback
+# Migrations (Local)
+make migrate        # Run migrations using local Go tools
+make rollback       # Rollback the last migration
+make new-migration name=xxx  # Create a new migration file
 
-# Run all tests
-make test
-
-# Run go mod tidy
-make tidy
+# Maintenance
+make tidy           # Run go mod tidy
+make test           # Run all tests
 ```
 
 ## Migrations
