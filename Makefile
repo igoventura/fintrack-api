@@ -14,6 +14,7 @@ help:
 	@echo "  make tidy           - Run go mod tidy"
 	@echo "  make test           - Run all tests"
 	@echo "  make compose        - Run docker compose"
+	@echo "  make swagger        - Generate OpenAPI documentation using swag"
 
 compose:
 	@echo "Running docker compose..."
@@ -37,3 +38,7 @@ tidy:
 test:
 	@echo "Running tests..."
 	@go test ./...
+
+swagger:
+	@echo "Generating Swagger documentation..."
+	@go run github.com/swaggo/swag/cmd/swag init -g cmd/api/main.go -o docs --ot yaml

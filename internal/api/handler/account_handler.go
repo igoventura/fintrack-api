@@ -16,6 +16,16 @@ func NewAccountHandler(s *service.AccountService) *AccountHandler {
 	return &AccountHandler{service: s}
 }
 
+// Get godoc
+// @Summary Get an account
+// @Description get account by ID
+// @Tags accounts
+// @Accept  json
+// @Produce  json
+// @Param id path string true "Account ID"
+// @Success 200 {object} dto.AccountResponse
+// @Failure 404 {object} handler.ErrorResponse
+// @Router /accounts/{id} [get]
 func (h *AccountHandler) Get(c *gin.Context) {
 	id := c.Param("id")
 	acc, err := h.service.GetAccount(c.Request.Context(), id)
@@ -27,6 +37,16 @@ func (h *AccountHandler) Get(c *gin.Context) {
 	c.JSON(http.StatusOK, dto.MapAccountToResponse(acc))
 }
 
+// List godoc
+// @Summary List accounts
+// @Description list accounts by tenant ID
+// @Tags accounts
+// @Accept  json
+// @Produce  json
+// @Param tenant_id query string true "Tenant ID"
+// @Success 200 {array} dto.AccountResponse
+// @Failure 400 {object} handler.ErrorResponse
+// @Router /accounts [get]
 func (h *AccountHandler) List(c *gin.Context) {
 	tenantID := c.Query("tenant_id")
 	if tenantID == "" {
@@ -48,6 +68,16 @@ func (h *AccountHandler) List(c *gin.Context) {
 	c.JSON(http.StatusOK, resp)
 }
 
+// Create godoc
+// @Summary Create an account
+// @Description create a new account
+// @Tags accounts
+// @Accept  json
+// @Produce  json
+// @Param account body dto.CreateAccountRequest true "Create account"
+// @Success 201 {object} dto.AccountResponse
+// @Failure 400 {object} handler.ErrorResponse
+// @Router /accounts [post]
 func (h *AccountHandler) Create(c *gin.Context) {
 	var req dto.CreateAccountRequest
 	if err := c.ShouldBindJSON(&req); err != nil {

@@ -28,8 +28,8 @@ func NewRouter(accountHandler *handler.AccountHandler) *gin.Engine {
 	doc := redoc.Redoc{
 		Title:       "FinTrack API",
 		Description: "Financial tracking API documentation",
-		SpecFile:    "./docs/openapi.yaml",
-		SpecPath:    "/openapi.yaml",
+		SpecFile:    "./docs/swagger.yaml",
+		SpecPath:    "/swagger.yaml",
 		DocsPath:    "/docs",
 	}
 
@@ -37,7 +37,7 @@ func NewRouter(accountHandler *handler.AccountHandler) *gin.Engine {
 	// but Redoc.Handler() returns a standard http.Handler.
 	// We can use gin.WrapH to wrap it.
 	r.GET("/docs", gin.WrapH(doc.Handler()))
-	r.StaticFile("/openapi.yaml", "./docs/openapi.yaml")
+	r.StaticFile("/swagger.yaml", "./docs/swagger.yaml")
 
 	return r
 }

@@ -31,6 +31,7 @@ make new-migration name=xxx  # Create a new migration file
 # Maintenance
 make tidy           # Run go mod tidy
 make test           # Run all tests
+make swagger        # Regenerate OpenAPI documentation using swag
 ```
 
 ## Migrations
@@ -68,9 +69,15 @@ go run cmd/api/main.go
 
 ### Documentation (OpenAPI / Redoc)
 
-The API automatically serves interactive documentation:
+The API automatically serves interactive documentation generated from code annotations.
+
 - **Redoc UI**: [http://localhost:8080/docs](http://localhost:8080/docs)
-- **OpenAPI Spec**: [http://localhost:8080/openapi.yaml](http://localhost:8080/openapi.yaml)
+- **OpenAPI Spec**: [http://localhost:8080/swagger.yaml](http://localhost:8080/swagger.yaml)
+
+To update the documentation after changing code annotations, run:
+```bash
+make swagger
+```
 
 ### Health Check
 ```bash
