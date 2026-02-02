@@ -147,6 +147,8 @@ CREATE UNIQUE INDEX IF NOT EXISTS ON "credit_card_info" ("account_id", "deactiva
 
 CREATE INDEX IF NOT EXISTS ON "credit_card_info" USING HASH ("deactivated_at");
 
+CREATE INDEX IF NOT EXISTS ON "credit_card_info" USING HASH ("account_id");
+
 CREATE INDEX IF NOT EXISTS ON "tags" USING HASH ("tenant_id");
 
 CREATE INDEX IF NOT EXISTS ON "tags" USING HASH ("deactivated_at");
