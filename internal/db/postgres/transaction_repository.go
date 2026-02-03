@@ -16,7 +16,7 @@ func NewTransactionRepository(db *DB) *TransactionRepository {
 }
 
 func (r *TransactionRepository) GetByID(ctx context.Context, id string) (*domain.Transaction, error) {
-	query := `SELECT id, previous_sibling_transaction_id, next_sibling_transaction_id, tenant_id, from_account_id, to_account_id, amount, accrual_month, transaction_type, category_id, comments, due_date, payment_date, created_at, created_by, updated_at, updated_by, deactivated_at, deactivated_by FROM transactions WHERE id = $1`
+	query := `SELECT id, previous_sibling_transaction_id, next_sibling_transaction_id, tenant_id, from_account_id, to_account_id, amount, accrual_month, transaction_type, category_id, comments, due_date, payment_date, created_at, created_by, updated_at, updated_by, deactivated_at, deactivated_by FROM transactions WHERE id = $1 AND deactivated_at IS NULL`
 	var t domain.Transaction
 	err := r.db.Pool.QueryRow(ctx, query, id).Scan(
 		&t.ID, &t.PreviousSiblingTransactionID, &t.NextSiblingTransactionID, &t.TenantID, &t.FromAccountID, &t.ToAccountID, &t.Amount, &t.AccrualMonth, &t.TransactionType, &t.CategoryID, &t.Comments, &t.DueDate, &t.PaymentDate, &t.CreatedAt, &t.CreatedBy, &t.UpdatedAt, &t.UpdatedBy, &t.DeactivatedAt, &t.DeactivatedBy,
@@ -28,7 +28,7 @@ func (r *TransactionRepository) GetByID(ctx context.Context, id string) (*domain
 }
 
 func (r *TransactionRepository) List(ctx context.Context, tenantID string) ([]domain.Transaction, error) {
-	query := `SELECT id, previous_sibling_transaction_id, next_sibling_transaction_id, tenant_id, from_account_id, to_account_id, amount, accrual_month, transaction_type, category_id, comments, due_date, payment_date, created_at, created_by, updated_at, updated_by, deactivated_at, deactivated_by FROM transactions WHERE tenant_id = $1`
+	query := `SELECT id, previous_sibling_transaction_id, next_sibling_transaction_id, tenant_id, from_account_id, to_account_id, amount, accrual_month, transaction_type, category_id, comments, due_date, payment_date, created_at, created_by, updated_at, updated_by, deactivated_at, deactivated_by FROM transactions WHERE tenant_id = $1 AND deactivated_at IS NULL`
 	rows, err := r.db.Pool.Query(ctx, query, tenantID)
 	if err != nil {
 		return nil, fmt.Errorf("failed to list transactions: %w", err)
@@ -47,19 +47,20 @@ func (r *TransactionRepository) List(ctx context.Context, tenantID string) ([]do
 }
 
 func (r *TransactionRepository) Create(ctx context.Context, t *domain.Transaction) error {
-	query := `INSERT INTO transactions (id, previous_sibling_transaction_id, next_sibling_transaction_id, tenant_id, from_account_id, to_account_id, amount, accrual_month, transaction_type, category_id, comments, due_date, payment_date, created_at, created_by, updated_at, updated_by, deactivated_at, deactivated_by)
-			  VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16, $17, $18, $19)`
-	_, err := r.db.Pool.Exec(ctx, query, t.ID, t.PreviousSiblingTransactionID, t.NextSiblingTransactionID, t.TenantID, t.FromAccountID, t.ToAccountID, t.Amount, t.AccrualMonth, t.TransactionType, t.CategoryID, t.Comments, t.DueDate, t.PaymentDate, t.CreatedAt, t.CreatedBy, t.UpdatedAt, t.UpdatedBy, t.DeactivatedAt, t.DeactivatedBy)
-	if err != nil {
+	query := `INSERT INTO transactions (previous_sibling_transaction_id, next_sibling_transaction_id, tenant_id, from_account_id, to_account_id, amount, accrual_month, transaction_type, category_id, comments, due_date, payment_date, created_by, updated_by)
+			  VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14)
+			  RETURNING id, created_at, updated_at`
+	row := r.db.Pool.QueryRow(ctx, query, t.PreviousSiblingTransactionID, t.NextSiblingTransactionID, t.TenantID, t.FromAccountID, t.ToAccountID, t.Amount, t.AccrualMonth, t.TransactionType, t.CategoryID, t.Comments, t.DueDate, t.PaymentDate, t.CreatedBy, t.UpdatedBy)
+	if err := row.Scan(&t.ID, &t.CreatedAt, &t.UpdatedAt); err != nil {
 		return fmt.Errorf("failed to create transaction: %w", err)
 	}
 	return nil
 }
 
 func (r *TransactionRepository) Update(ctx context.Context, t *domain.Transaction) error {
-	query := `UPDATE transactions SET previous_sibling_transaction_id = $2, next_sibling_transaction_id = $3, from_account_id = $4, to_account_id = $5, amount = $6, accrual_month = $7, transaction_type = $8, category_id = $9, comments = $10, due_date = $11, payment_date = $12, updated_at = $13, updated_by = $14, deactivated_at = $15, deactivated_by = $16 WHERE id = $1`
-	_, err := r.db.Pool.Exec(ctx, query, t.ID, t.PreviousSiblingTransactionID, t.NextSiblingTransactionID, t.FromAccountID, t.ToAccountID, t.Amount, t.AccrualMonth, t.TransactionType, t.CategoryID, t.Comments, t.DueDate, t.PaymentDate, t.UpdatedAt, t.UpdatedBy, t.DeactivatedAt, t.DeactivatedBy)
-	if err != nil {
+	query := `UPDATE transactions SET previous_sibling_transaction_id = $2, next_sibling_transaction_id = $3, from_account_id = $4, to_account_id = $5, amount = $6, accrual_month = $7, transaction_type = $8, category_id = $9, comments = $10, due_date = $11, payment_date = $12, updated_at = CURRENT_TIMESTAMP, updated_by = $13 WHERE id = $1 RETURNING updated_at`
+	row := r.db.Pool.QueryRow(ctx, query, t.ID, t.PreviousSiblingTransactionID, t.NextSiblingTransactionID, t.FromAccountID, t.ToAccountID, t.Amount, t.AccrualMonth, t.TransactionType, t.CategoryID, t.Comments, t.DueDate, t.PaymentDate, t.UpdatedBy)
+	if err := row.Scan(&t.UpdatedAt); err != nil {
 		return fmt.Errorf("failed to update transaction: %w", err)
 	}
 	return nil
@@ -95,7 +96,7 @@ func (r *TransactionRepository) RemoveTagFromTransaction(ctx context.Context, tr
 func (r *TransactionRepository) ListTransactionTags(ctx context.Context, transactionID string) ([]domain.Tag, error) {
 	query := `SELECT t.id, t.tenant_id, t.name, t.deactivated_at FROM tags t
 			  JOIN transactions_tags tt ON t.id = tt.tag_id
-			  WHERE tt.transaction_id = $1`
+			  WHERE tt.transaction_id = $1 AND t.deactivated_at IS NULL`
 	rows, err := r.db.Pool.Query(ctx, query, transactionID)
 	if err != nil {
 		return nil, fmt.Errorf("failed to list transaction tags: %w", err)
@@ -112,11 +113,13 @@ func (r *TransactionRepository) ListTransactionTags(ctx context.Context, transac
 	}
 	return tags, nil
 }
+
 func (r *TransactionRepository) AddAttachment(ctx context.Context, a *domain.TransactionAttachment) error {
-	query := `INSERT INTO transaction_attachments (id, transaction_id, name, path, created_at, created_by, updated_at, updated_by, deactivated_at, deactivated_by)
-			  VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10)`
-	_, err := r.db.Pool.Exec(ctx, query, a.ID, a.TransactionID, a.Name, a.Path, a.CreatedAt, a.CreatedBy, a.UpdatedAt, a.UpdatedBy, a.DeactivatedAt, a.DeactivatedBy)
-	if err != nil {
+	query := `INSERT INTO transaction_attachments (transaction_id, name, path, created_by, updated_by)
+			  VALUES ($1, $2, $3, $4, $5)
+			  RETURNING id, created_at, updated_at`
+	row := r.db.Pool.QueryRow(ctx, query, a.TransactionID, a.Name, a.Path, a.CreatedBy, a.UpdatedBy)
+	if err := row.Scan(&a.ID, &a.CreatedAt, &a.UpdatedAt); err != nil {
 		return fmt.Errorf("failed to add attachment: %w", err)
 	}
 	return nil
@@ -132,7 +135,7 @@ func (r *TransactionRepository) RemoveAttachment(ctx context.Context, id string,
 }
 
 func (r *TransactionRepository) ListAttachments(ctx context.Context, transactionID string) ([]domain.TransactionAttachment, error) {
-	query := `SELECT id, transaction_id, name, path, created_at, created_by, updated_at, updated_by, deactivated_at, deactivated_by FROM transaction_attachments WHERE transaction_id = $1`
+	query := `SELECT id, transaction_id, name, path, created_at, created_by, updated_at, updated_by, deactivated_at, deactivated_by FROM transaction_attachments WHERE transaction_id = $1 AND deactivated_at IS NULL`
 	rows, err := r.db.Pool.Query(ctx, query, transactionID)
 	if err != nil {
 		return nil, fmt.Errorf("failed to list attachments: %w", err)
