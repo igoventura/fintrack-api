@@ -22,3 +22,18 @@ type TenantRepository interface {
 	Delete(ctx context.Context, id string) error
 	ListByUserID(ctx context.Context, userID string) ([]Tenant, error)
 }
+
+type contextKey string
+
+const tenantIDKey contextKey = "tenantID"
+
+// WithTenantID returns a new context with the given tenant ID.
+func WithTenantID(ctx context.Context, tenantID string) context.Context {
+	return context.WithValue(ctx, tenantIDKey, tenantID)
+}
+
+// GetTenantID retrieves the tenant ID from the context.
+func GetTenantID(ctx context.Context) string {
+	val, _ := ctx.Value(tenantIDKey).(string)
+	return val
+}

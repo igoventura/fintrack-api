@@ -39,3 +39,13 @@ type UserRepository interface {
 	RemoveUserFromTenant(ctx context.Context, userID, tenantID string) error
 	ListUserTenants(ctx context.Context, userID string) ([]UserTenant, error)
 }
+
+const userIdKey contextKey = "userID"
+
+func WithUserID(ctx context.Context, userID string) context.Context {
+	return context.WithValue(ctx, userIdKey, userID)
+}
+
+func GetUserID(ctx context.Context) string {
+	return ctx.Value(userIdKey).(string)
+}

@@ -4,6 +4,7 @@ import (
 	"net/http"
 
 	"github.com/gin-gonic/gin"
+	"github.com/igoventura/fintrack-core/domain"
 	"github.com/igoventura/fintrack-core/internal/api/dto"
 	"github.com/igoventura/fintrack-core/internal/service"
 )
@@ -23,10 +24,17 @@ func NewAccountHandler(s *service.AccountService) *AccountHandler {
 // @Accept  json
 // @Produce  json
 // @Param id path string true "Account ID"
+// @Param X-Tenant-ID header string true "Tenant ID"
 // @Success 200 {object} dto.AccountResponse
 // @Failure 404 {object} handler.ErrorResponse
 // @Router /accounts/{id} [get]
 func (h *AccountHandler) Get(c *gin.Context) {
+	tenantID := domain.GetTenantID(c.Request.Context())
+	if tenantID == "" {
+		ErrorJSON(c, http.StatusBadRequest, "tenant_id is required")
+		return
+	}
+
 	id := c.Param("id")
 	acc, err := h.service.GetAccount(c.Request.Context(), id)
 	if err != nil {

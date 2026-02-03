@@ -2,10 +2,10 @@ package middleware
 
 import (
 	"github.com/gin-gonic/gin"
+	"github.com/igoventura/fintrack-core/domain"
 )
 
 const (
-	TenantIDKey    = "tenantID"
 	TenantIDHeader = "X-Tenant-ID"
 )
 
@@ -19,7 +19,8 @@ func (m *TenantMiddleware) Handle() gin.HandlerFunc {
 	return func(c *gin.Context) {
 		tenantID := c.GetHeader(TenantIDHeader)
 		if tenantID != "" {
-			c.Set(TenantIDKey, tenantID)
+			ctx := domain.WithTenantID(c.Request.Context(), tenantID)
+			c.Request = c.Request.WithContext(ctx)
 		}
 		c.Next()
 	}
