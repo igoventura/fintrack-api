@@ -50,6 +50,8 @@ We follow **Clean Architecture**.
     - **MUST** update `PROJECT_STRUCTURE.md` if you add/move files.
     - **MUST** update `README.md` if you add new features or env vars.
     - **Swagger**: Run `make swagger` after modifying API Handlers or DTOs.
+        - **Authenticted Endpoints**: Must include `// @Security AuthPassword`.
+        - **Tenant Endpoints**: Must include `// @Param X-Tenant-ID header string true "Tenant ID"`.
 
 - **Migrations**:
     - **NEVER** modify an existing migration file that has been applied (unless in local dev and you reset DB).
