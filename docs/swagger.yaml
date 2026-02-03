@@ -162,5 +162,6 @@ paths:
 securityDefinitions:
   OAuth2Application:
     flow: application
+    tokenUrl: https://<project-ref>.supabase.co/auth/login
     type: oauth2
 swagger: "2.0"

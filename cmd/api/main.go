@@ -29,7 +29,7 @@ import (
 // @license.url http://www.apache.org/licenses/LICENSE-2.0.html
 
 // @SecurityDefinitions.oauth2.application OAuth2Application
-// @TokenUrl
+// @TokenUrl https://<project-ref>.supabase.co/auth/login
 // @host localhost:8080
 // @BasePath /
 func main() {
