@@ -28,8 +28,8 @@ import (
 // @license.name Apache 2.0
 // @license.url http://www.apache.org/licenses/LICENSE-2.0.html
 
-// @SecurityDefinitions.oauth2.application OAuth2Application
-// @TokenUrl https://<project-ref>.supabase.co/auth/login
+// @SecurityDefinitions.oauth2.password AuthPassword
+// @TokenUrl /auth/login
 // @host localhost:8080
 // @BasePath /
 func main() {
@@ -73,13 +73,21 @@ func main() {
 		log.Fatalf("Failed to initialize auth validator: %v", err)
 	}
 
+	// Auth Service (Supabase)
+	anonKey := os.Getenv("SUPABASE_ANON_KEY")
+	if anonKey == "" {
+		log.Fatal("SUPABASE_ANON_KEY environment variable is required")
+	}
+	authService := service.NewSupabaseAuthService(projectRef, anonKey)
+	authHandler := handler.NewAuthHandler(authService)
+
 	// Create Repo and Middleware
 	userRepo := postgres.NewUserRepository(db)
 	authMiddleware := middleware.NewAuthMiddleware(userRepo, authValidator)
 	tenantMiddleware := middleware.NewTenantMiddleware()
 
 	// Router setup
-	r := router.NewRouter(accountHandler, authMiddleware, tenantMiddleware)
+	r := router.NewRouter(accountHandler, authHandler, authMiddleware, tenantMiddleware)
 
 	// Server configuration
 	port := os.Getenv("PORT")

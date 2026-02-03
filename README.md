@@ -113,6 +113,7 @@ DB_NAME=fintrack
 DB_USER=postgres
 DB_PASSWORD=postgres
 SUPABASE_PROJECT_REF=your_supabase_project_ref
+SUPABASE_ANON_KEY=your_supabase_anon_key
 ```
 
 ## Testing

@@ -36,6 +36,15 @@ definitions:
       updated_at:
         type: string
     type: object
+  dto.AuthResponse:
+    properties:
+      access_token:
+        type: string
+      refresh_token:
+        type: string
+      user:
+        $ref: '#/definitions/dto.User'
+    type: object
   dto.CreateAccountRequest:
     properties:
       color:
@@ -56,6 +65,34 @@ definitions:
     - name
     - tenant_id
     - type
+    type: object
+  dto.LoginRequest:
+    properties:
+      email:
+        type: string
+      password:
+        type: string
+    required:
+    - email
+    - password
+    type: object
+  dto.RegisterRequest:
+    properties:
+      email:
+        type: string
+      password:
+        minLength: 6
+        type: string
+    required:
+    - email
+    - password
+    type: object
+  dto.User:
+    properties:
+      email:
+        type: string
+      id:
+        type: string
     type: object
   handler.ErrorResponse:
     properties:
@@ -155,13 +192,65 @@ paths:
           schema:
             $ref: '#/definitions/handler.ErrorResponse'
       security:
-      - OAuth2Application: []
+      - AuthPassword: []
       summary: Get an account
       tags:
       - accounts
+  /auth/login:
+    post:
+      consumes:
+      - application/json
+      description: Login with email and password
+      parameters:
+      - description: Login User
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/dto.LoginRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/dto.AuthResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/handler.ErrorResponse'
+      summary: Login
+      tags:
+      - auth
+  /auth/register:
+    post:
+      consumes:
+      - application/json
+      description: Register a new user with email and password
+      parameters:
+      - description: Register User
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/dto.RegisterRequest'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            $ref: '#/definitions/dto.AuthResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/handler.ErrorResponse'
+      summary: Register a new user
+      tags:
+      - auth
 securityDefinitions:
-  OAuth2Application:
-    flow: application
-    tokenUrl: https://<project-ref>.supabase.co/auth/login
+  AuthPassword:
+    flow: password
+    tokenUrl: /auth/login
     type: oauth2
 swagger: "2.0"
