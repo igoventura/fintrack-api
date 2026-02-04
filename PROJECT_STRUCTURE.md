@@ -10,9 +10,12 @@ This project follows **Clean Architecture** principles to ensure isolation of bu
 │   └── api/                # Application entry point
 │       └── main.go         # Wire up dependencies and start the server
 ├── domain/                 # (Core) Business entities and repository interfaces
-│   ├── account.go          # Struct definitions + Repository Interface
-│   ├── user.go
-│   └── ...
+│   ├── account.go
+│   ├── category.go
+│   ├── tag.go
+│   ├── tenant.go
+│   ├── transaction.go
+│   └── user.go
 ├── internal/
 │   ├── api/                # Transport Layer (Adapters)
 │   │   ├── handler/        # HTTP Handlers (controllers)
@@ -20,12 +23,18 @@ This project follows **Clean Architecture** principles to ensure isolation of bu
 │   │   ├── router/         # Route definitions and Scalar registration
 │   │   └── dto/            # Data Transfer Objects (Request/Response structs)
 │   ├── service/            # Use Cases (Business Logic)
-│   │   ├── account_service.go # Orchestrates entities and repos
-│   │   ├── auth_service.go    # Authentication logic (signup, login)
-│   │   └── user_service.go    # User management logic
+│   │   ├── account_service.go
+│   │   ├── auth_service.go
+│   │   ├── tenant_service.go
+│   │   └── user_service.go
 │   ├── db/                 # Persistence Layer (Adapters)
 │   │   └── postgres/       # SQL implementation using pgx
 │   │       ├── account_repository.go
+│   │       ├── category_repository.go
+│   │       ├── db.go
+│   │       ├── tag_repository.go
+│   │       ├── tenant_repository.go
+│   │       ├── transaction_repository.go
 │   │       └── user_repository.go
 │   ├── config/             # Configuration loading (env vars, .yaml)
 │   └── auth/               # Identity Provider integration (Supabase Validator)
@@ -43,11 +52,14 @@ This project follows **Clean Architecture** principles to ensure isolation of bu
 The center of the application. It contains entities and repository interfaces. 
 - **Rule**: This layer must **never** import anything from `internal`.
 - **Validation**: Domain entities allow for self-validation via `IsValid()` methods, ensuring data integrity before persistence.
+- **Entities**:
+  - `User`, `Tenant`: Identity and access management.
+  - `Account`, `Transaction`: Core financial data.
+  - `Category`, `Tag`: Classification systems.
 
 ### 2. Service Layer (`/internal/service`)
 Contains the business logic (Use Cases). It acts as an orchestrator between the API layer and the Domain.
 - **Responsibility**: Orchestrates domain logic and implements business rules.
-- **Auth Service**: Manages user authentication flows (Sign Up, Login) and token handling via Supabase.
 - **Dependency**: Receives and returns **Domain Entities** (or primitives). It should NOT know about DTOs.
 - **Rule**: Pure business logic. No JSON tags, no validator tags, no web concerns.
 

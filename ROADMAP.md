@@ -22,13 +22,13 @@ Core infrastructure and user management.
 ## Phase 2: Core Classification (Next Priorities)
 Organizing financial data.
 
-- [ ] **Categories**
+- [ ] **Categories** (authenticated endpoint and tenant-scoped)
   - [x] Repository
   - [ ] Service Layer (Business Logic)
   - [ ] API Handlers & Routes
   - [ ] Integration Tests
 
-- [ ] **Tags**
+- [ ] **Tags** (authenticated endpoint and tenant-scoped)
   - [x] Repository
   - [ ] Service Layer (Business Logic)
   - [ ] API Handlers & Routes
@@ -36,14 +36,14 @@ Organizing financial data.
 ## Phase 3: Financial Core
 The heart of the application: tracking money movement.
 
-- [ ] **Transactions**
+- [ ] **Transactions** (authenticated endpoint and tenant-scoped)
   - [x] Repository (Basic CRUD)
   - [ ] Service Layer (Logic for Types: Credit, Debit, Transfer, Payment)
   - [ ] API Handlers & Routes
   - [ ] Link to Categories and Tags
   - [ ] Validation (Balance checks, same currency logic - *To Be Decided*)
 
-- [ ] **Attachments**
+- [ ] **Attachments** (authenticated endpoint and tenant-scoped)
   - [x] Schema Support
   - [ ] File Upload Logic (Service)
   - [ ] Storage Provider Integration (e.g. S3/Supabase Storage) - *Pending Design*
@@ -52,18 +52,19 @@ The heart of the application: tracking money movement.
 ## Phase 4: Extensions
 Advanced features.
 
-- [ ] **Credit Card Management**
+- [ ] **Credit Card Management** (authenticated endpoint and tenant-scoped)
   - [x] Schema Support (`credit_card_info`)
   - [ ] Domain & Repository
   - [ ] Service & API
   - [ ] Statement Closing/Due Date Logic
 
-- [ ] **Reporting**
+- [ ] **Reporting** (authenticated endpoint and tenant-scoped)
   - [ ] Aggregation Queries (Monthly Spend, Income vs Expense)
   - [ ] Dashboard Endpoints
 
-- [ ] **Invitations** (New)
+- [ ] **Invitations** (authenticated and tenant-scoped create endpoint, unauthenticated accept endpoint, tenant is not required for accept endpoint)
   - [ ] Schema (`invitations` table)
+    - id, inviter_user_id, email, tenant_id, status, expires_at, created_at, updated_at
   - [ ] Domain & Repository
   - [ ] Service (Send, Accept, Revoke logic)
   - [ ] API Handlers
