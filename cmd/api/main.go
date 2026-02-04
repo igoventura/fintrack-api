@@ -54,6 +54,7 @@ func main() {
 	// Initialize Repositories
 	accountRepo := postgres.NewAccountRepository(db)
 	categoryRepo := postgres.NewCategoryRepository(db)
+	tagRepo := postgres.NewTagRepository(db)
 	userRepo := postgres.NewUserRepository(db)
 	tenantRepo := postgres.NewTenantRepository(db)
 
@@ -72,6 +73,7 @@ func main() {
 	// Initialize Services
 	accountService := service.NewAccountService(accountRepo)
 	categoryService := service.NewCategoryService(categoryRepo)
+	tagService := service.NewTagService(tagRepo)
 	userService := service.NewUserService(userRepo)
 	tenantService := service.NewTenantService(tenantRepo, userService)
 
@@ -85,6 +87,7 @@ func main() {
 	// Initialize Handlers
 	accountHandler := handler.NewAccountHandler(accountService)
 	categoryHandler := handler.NewCategoryHandler(categoryService)
+	tagHandler := handler.NewTagHandler(tagService)
 	tenantHandler := handler.NewTenantHandler(tenantService)
 	authHandler := handler.NewAuthHandler(authService)
 	userHandler := handler.NewUserHandler(userService, authService)
@@ -94,7 +97,7 @@ func main() {
 	tenantMiddleware := middleware.NewTenantMiddleware(tenantRepo)
 
 	// Router setup
-	r := router.NewRouter(accountHandler, authHandler, categoryHandler, tenantHandler, authMiddleware, tenantMiddleware, userHandler)
+	r := router.NewRouter(accountHandler, authHandler, categoryHandler, tagHandler, tenantHandler, authMiddleware, tenantMiddleware, userHandler)
 
 	// Server configuration
 	port := os.Getenv("PORT")

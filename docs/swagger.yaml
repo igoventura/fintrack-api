@@ -99,6 +99,13 @@ definitions:
     required:
     - name
     type: object
+  dto.CreateTagRequest:
+    properties:
+      name:
+        type: string
+    required:
+    - name
+    type: object
   dto.CreateTenantRequest:
     properties:
       name:
@@ -120,6 +127,25 @@ definitions:
     - full_name
     - password
     type: object
+  dto.TagResponse:
+    properties:
+      created_at:
+        type: string
+      created_by:
+        type: string
+      deactivated_at:
+        type: string
+      id:
+        type: string
+      name:
+        type: string
+      tenant_id:
+        type: string
+      updated_at:
+        type: string
+      updated_by:
+        type: string
+    type: object
   dto.TenantResponse:
     properties:
       created_at:
@@ -140,6 +166,13 @@ definitions:
       name:
         type: string
       parent_category_id:
+        type: string
+    required:
+    - name
+    type: object
+  dto.UpdateTagRequest:
+    properties:
+      name:
         type: string
     required:
     - name
@@ -508,6 +541,167 @@ paths:
       summary: Update category
       tags:
       - categories
+  /tags:
+    get:
+      description: Get all tags for the authenticated user's tenant
+      parameters:
+      - description: Tenant ID
+        in: header
+        name: X-Tenant-ID
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/dto.TagResponse'
+            type: array
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/handler.ErrorResponse'
+      security:
+      - AuthPassword: []
+      summary: List tags
+      tags:
+      - tags
+    post:
+      consumes:
+      - application/json
+      description: Create a new tag for the authenticated user's tenant
+      parameters:
+      - description: Tenant ID
+        in: header
+        name: X-Tenant-ID
+        required: true
+        type: string
+      - description: Create Tag Request
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/dto.CreateTagRequest'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            $ref: '#/definitions/dto.TagResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/handler.ErrorResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/handler.ErrorResponse'
+      security:
+      - AuthPassword: []
+      summary: Create tag
+      tags:
+      - tags
+  /tags/{id}:
+    delete:
+      description: Soft Delete a tag
+      parameters:
+      - description: Tenant ID
+        in: header
+        name: X-Tenant-ID
+        required: true
+        type: string
+      - description: Tag ID
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "204":
+          description: No Content
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/handler.ErrorResponse'
+      security:
+      - AuthPassword: []
+      summary: Delete tag
+      tags:
+      - tags
+    get:
+      description: Get a tag by its ID
+      parameters:
+      - description: Tenant ID
+        in: header
+        name: X-Tenant-ID
+        required: true
+        type: string
+      - description: Tag ID
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/dto.TagResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/handler.ErrorResponse'
+      security:
+      - AuthPassword: []
+      summary: Get tag
+      tags:
+      - tags
+    put:
+      consumes:
+      - application/json
+      description: Update an existing tag
+      parameters:
+      - description: Tenant ID
+        in: header
+        name: X-Tenant-ID
+        required: true
+        type: string
+      - description: Tag ID
+        in: path
+        name: id
+        required: true
+        type: string
+      - description: Update Tag Request
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/dto.UpdateTagRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/dto.TagResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/handler.ErrorResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/handler.ErrorResponse'
+      security:
+      - AuthPassword: []
+      summary: Update tag
+      tags:
+      - tags
   /tenants:
     post:
       consumes:

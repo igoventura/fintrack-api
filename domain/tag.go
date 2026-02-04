@@ -11,16 +11,21 @@ type Tag struct {
 	ID            string     `json:"id"`
 	TenantID      string     `json:"tenant_id"`
 	Name          string     `json:"name"`
+	CreatedAt     time.Time  `json:"created_at"`
+	CreatedBy     string     `json:"created_by"`
+	UpdatedAt     time.Time  `json:"updated_at"`
+	UpdatedBy     string     `json:"updated_by"`
 	DeactivatedAt *time.Time `json:"deactivated_at,omitempty"`
+	DeactivatedBy *string    `json:"deactivated_by,omitempty"`
 }
 
 // TagRepository defines the interface for tag persistence.
 type TagRepository interface {
-	GetByID(ctx context.Context, id string) (*Tag, error)
+	GetByID(ctx context.Context, id, tenantID string) (*Tag, error)
 	List(ctx context.Context, tenantID string) ([]Tag, error)
 	Create(ctx context.Context, tag *Tag) error
 	Update(ctx context.Context, tag *Tag) error
-	Delete(ctx context.Context, id string) error
+	Delete(ctx context.Context, id, tenantID, userID string) error
 }
 
 func (t *Tag) IsValid() (bool, map[string]error) {

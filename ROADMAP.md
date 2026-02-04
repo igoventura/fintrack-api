@@ -30,8 +30,8 @@ Organizing financial data.
 
 - [ ] **Tags** (authenticated endpoint and tenant-scoped)
   - [x] Repository
-  - [ ] Service Layer (Business Logic)
-  - [ ] API Handlers & Routes
+  - [x] Service Layer (Business Logic)
+  - [x] API Handlers & Routes
 
 ## Phase 3: Financial Core
 The heart of the application: tracking money movement.
@@ -40,7 +40,7 @@ The heart of the application: tracking money movement.
   - [x] Repository (Basic CRUD)
   - [ ] Service Layer (Logic for Types: Credit, Debit, Transfer, Payment)
   - [ ] API Handlers & Routes
-  - [ ] Link to Categories and Tags
+  - [ ] Link to Categories and Tags (Note: Must update `transactions_tags` schema to include `created_at`)
   - [ ] Validation (Balance checks, same currency logic - *To Be Decided*)
 
 - [ ] **Attachments** (authenticated endpoint and tenant-scoped)

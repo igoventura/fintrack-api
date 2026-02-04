@@ -22,6 +22,7 @@ This project follows **Clean Architecture** principles to ensure isolation of bu
 │   │   │   ├── account_handler.go
 │   │   │   ├── auth_handler.go
 │   │   │   ├── category_handler.go
+│   │   │   ├── tag_handler.go
 │   │   │   ├── tenant_handler.go
 │   │   │   └── user_handler.go
 │   │   ├── middleware/     # Auth, Tenant, Logging, CORS
@@ -30,12 +31,14 @@ This project follows **Clean Architecture** principles to ensure isolation of bu
 │   │       ├── account_dto.go
 │   │       ├── auth_dto.go
 │   │       ├── category_dto.go
+│   │       ├── tag_dto.go
 │   │       ├── tenant_dto.go
 │   │       └── user_dto.go
 │   ├── service/            # Use Cases (Business Logic)
 │   │   ├── account_service.go
 │   │   ├── auth_service.go
 │   │   ├── category_service.go
+│   │   ├── tag_service.go
 │   │   ├── tenant_service.go
 │   │   └── user_service.go
 │   ├── db/                 # Persistence Layer (Adapters)

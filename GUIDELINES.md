@@ -83,7 +83,19 @@ Follow this order when implementing a new feature (e.g., "Add Expense"):
     UPDATE table SET deactivated_at = NOW() WHERE id = $1
     ```
 
-#### Timestamps
+#### Timestamps & Audit Columns
+*   **Domain Entities**: Business entities (e.g., Accounts, Categories, Tags, Transactions, CreditCardInfo) MUST include the full audit set:
+    *   `created_at` (TIMESTAMPTZ, DEFAULT CURRENT_TIMESTAMP)
+    *   `created_by` (UUID, Not Null)
+    *   `updated_at` (TIMESTAMPTZ, DEFAULT CURRENT_TIMESTAMP)
+    *   `updated_by` (UUID, Not Null)
+    *   `deactivated_at` (TIMESTAMPTZ, Nullable)
+    *   `deactivated_by` (UUID, Nullable)
+*   **Exceptions**:
+    *   **System Tables** (`users`, `tenants`): Only require `created_at`, `updated_at`, `deactivated_at`.
+    *   **Junction Tables** (`users_tenants`, `transactions_tags`): Only require `created_at` (and `updated_at`/`deactivated_at` if mutable/soft-deletable).
+*   **No Triggers**: Do NOT use database triggers to update `updated_at`.
+*   **Manual Update**: The `UPDATE` query in the Repository MUST explicitly set `updated_at = CURRENT_TIMESTAMP`.
 *   **Return Values**: `Create` and `Update` operations **MUST** return the generated `created_at` and `updated_at` timestamps from the database (using `RETURNING` clause) to ensure the client has the authoritative time.
 
 #### Migrations
