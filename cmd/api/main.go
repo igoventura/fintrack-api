@@ -7,12 +7,12 @@ import (
 	"os"
 	"time"
 
-	"github.com/igoventura/fintrack-core/internal/api/handler"
-	"github.com/igoventura/fintrack-core/internal/api/middleware"
-	"github.com/igoventura/fintrack-core/internal/api/router"
-	"github.com/igoventura/fintrack-core/internal/auth"
-	"github.com/igoventura/fintrack-core/internal/db/postgres"
-	"github.com/igoventura/fintrack-core/internal/service"
+	"github.com/igoventura/fintrack-api/internal/api/handler"
+	"github.com/igoventura/fintrack-api/internal/api/middleware"
+	"github.com/igoventura/fintrack-api/internal/api/router"
+	"github.com/igoventura/fintrack-api/internal/auth"
+	"github.com/igoventura/fintrack-api/internal/db/postgres"
+	"github.com/igoventura/fintrack-api/internal/service"
 	"github.com/joho/godotenv"
 )
 

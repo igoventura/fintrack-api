@@ -5,8 +5,8 @@ import (
 
 	"github.com/MarceloPetrucio/go-scalar-api-reference"
 	"github.com/gin-gonic/gin"
-	"github.com/igoventura/fintrack-core/internal/api/handler"
-	"github.com/igoventura/fintrack-core/internal/api/middleware"
+	"github.com/igoventura/fintrack-api/internal/api/handler"
+	"github.com/igoventura/fintrack-api/internal/api/middleware"
 )
 
 func NewRouter(accountHandler *handler.AccountHandler, authHandler *handler.AuthHandler, categoryHandler *handler.CategoryHandler, tagHandler *handler.TagHandler, tenantHandler *handler.TenantHandler, authMiddleware *middleware.AuthMiddleware, tenantMiddleware *middleware.TenantMiddleware, userHandler *handler.UserHandler) *gin.Engine {

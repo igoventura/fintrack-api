@@ -3,8 +3,8 @@ package service
 import (
 	"context"
 
-	"github.com/igoventura/fintrack-core/domain"
-	"github.com/igoventura/fintrack-core/internal/api/dto"
+	"github.com/igoventura/fintrack-api/domain"
+	"github.com/igoventura/fintrack-api/internal/api/dto"
 	"github.com/supabase-community/gotrue-go"
 	"github.com/supabase-community/gotrue-go/types"
 )

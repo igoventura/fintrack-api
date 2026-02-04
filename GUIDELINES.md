@@ -1,6 +1,6 @@
 # Fintrack Core Development Guidelines
 
-These guidelines are mandatory for all contributions to `fintrack-core`. They ensure consistency, maintainability, and adherence to the project's architectural standards.
+These guidelines are mandatory for all contributions to `fintrack-api`. They ensure consistency, maintainability, and adherence to the project's architectural standards.
 
 ## 1. Project Structure
 

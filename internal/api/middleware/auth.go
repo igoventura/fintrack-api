@@ -5,8 +5,8 @@ import (
 	"strings"
 
 	"github.com/gin-gonic/gin"
-	"github.com/igoventura/fintrack-core/domain"
-	"github.com/igoventura/fintrack-core/internal/auth"
+	"github.com/igoventura/fintrack-api/domain"
+	"github.com/igoventura/fintrack-api/internal/auth"
 )
 
 const (

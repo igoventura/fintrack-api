@@ -3,7 +3,7 @@ package dto
 import (
 	"time"
 
-	"github.com/igoventura/fintrack-core/domain"
+	"github.com/igoventura/fintrack-api/domain"
 )
 
 type AccountResponse struct {

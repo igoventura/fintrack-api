@@ -1,4 +1,4 @@
-module github.com/igoventura/fintrack-core
+module github.com/igoventura/fintrack-api
 
 go 1.25.6
 

@@ -4,7 +4,7 @@ FinTrack Core is a Web API providing the foundational financial tracking logic f
 
 ## Structure
 
-See [PROJECT_STRUCTURE.md](file:///Users/igoventura/Developer/Personal/fintrack-core/PROJECT_STRUCTURE.md) for details on the codebase organization and architectural layers.
+See [PROJECT_STRUCTURE.md](file:///Users/igoventura/Developer/Personal/fintrack-api/PROJECT_STRUCTURE.md) for details on the codebase organization and architectural layers.
 
 ## Infrastructure
 
@@ -49,7 +49,7 @@ This project uses [tern](https://github.com/jackc/tern) for database migrations.
 ### Installation
 
 ```bash
-go get github.com/igoventura/fintrack-core
+go get github.com/igoventura/fintrack-api
 ```
 
 ### Usage

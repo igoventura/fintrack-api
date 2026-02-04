@@ -4,7 +4,7 @@ import (
 	"context"
 	"fmt"
 
-	"github.com/igoventura/fintrack-core/domain"
+	"github.com/igoventura/fintrack-api/domain"
 )
 
 type UserRepository struct {

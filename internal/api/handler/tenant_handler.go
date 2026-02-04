@@ -4,9 +4,9 @@ import (
 	"net/http"
 
 	"github.com/gin-gonic/gin"
-	"github.com/igoventura/fintrack-core/domain"
-	"github.com/igoventura/fintrack-core/internal/api/dto"
-	"github.com/igoventura/fintrack-core/internal/service"
+	"github.com/igoventura/fintrack-api/domain"
+	"github.com/igoventura/fintrack-api/internal/api/dto"
+	"github.com/igoventura/fintrack-api/internal/service"
 )
 
 type TenantHandler struct {
