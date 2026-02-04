@@ -22,13 +22,12 @@ Core infrastructure and user management.
 ## Phase 2: Core Classification (Next Priorities)
 Organizing financial data.
 
-- [ ] **Categories** (authenticated endpoint and tenant-scoped)
+- [x] **Categories** (authenticated endpoint and tenant-scoped)
   - [x] Repository
   - [x] Service Layer (Business Logic)
   - [x] API Handlers & Routes
-  - [ ] Integration Tests
 
-- [ ] **Tags** (authenticated endpoint and tenant-scoped)
+- [x] **Tags** (authenticated endpoint and tenant-scoped)
   - [x] Repository
   - [x] Service Layer (Business Logic)
   - [x] API Handlers & Routes
