@@ -130,6 +130,7 @@ We use `swag` to generate OpenAPI documentation.
 *   `@Description`: Detailed description.
 *   `@Tags`: Resource group (e.g., `users`, `accounts`).
 *   `@Accept`, `@Produce`: Usually `json`.
+    *   *Exception*: The `Login` endpoint uses `multipart/form-data` (annotated as `mpfd`).
 
 ### Security & Multi-Tenancy
 *   **Authenticated Endpoints**: MUST include:
