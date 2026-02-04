@@ -35,19 +35,27 @@ Organizing financial data.
 ## Phase 3: Financial Core
 The heart of the application: tracking money movement.
 
-- [ ] **Transactions** (authenticated endpoint and tenant-scoped)
-  - [x] Repository (Basic CRUD)
-  - [ ] Service Layer (Logic for Types: Credit, Debit, Transfer, Payment)
-  - [ ] API Handlers & Routes
-  - [ ] Link to Categories and Tags (Note: Must update `transactions_tags` schema to include `created_at`)
+- [ ] **Transactions** (authenticated endpoint and tenant-scoped) - **IN PROGRESS**
+  - [x] Schema Migration
+      - [x] Add `currency` column to `transactions` table.
+      - [x] Remove `previous_sibling_transaction_id` and `next_sibling_transaction_id`.
+      - [x] Add `parent_transaction_id` column for splitting transactions.
+      - [x] Add `created_at`, `updated_at`, `deactivated_at` to `transactions_tags` table.
+  - [x] Domain & Repository
+      - [x] Update `Transaction` entity.
+      - [x] Update `TransactionRepository` (CRUD + Filters).
+      - [x] Update `TransactionRepository` for bulk tag insertion (`AddTagsToTransaction`).
+  - [x] Service Layer
+      - [x] Implement `CreateTransaction` with:
+          - [x] Default currency logic (from Account).
+          - [x] Tag association (list of IDs).
+          - [x] Basic validation.
+  - [ ] API Layer
+      - [ ] Create DTOs.
+      - [ ] Implement `TransactionHandler`.
+      - [ ] Register Routes.
+  - [ ] Link to Categories and Tags
   - [ ] **Transaction Logic Rules**:
-    - [ ] **Schema Migration**:
-      - Add `currency` column (varchar(3)): Default to `FromAccount` currency.
-      - Remove `PreviousSiblingTransactionID` and `NextSiblingTransactionID`.
-      - Add `ParentTransactionID` (UUID, Nullable):
-        - For Transfers: links credit transaction to original debit.
-        - For Installments: links subsequent installments to first one.
-      - Update `transactions_tags` schema to include `created_at`.
     - [ ] **Fields**:
       - `FromAccountID`: Source account.
       - `ToAccountID`: Recipient account (triggers credit transaction for transfers/payments).
