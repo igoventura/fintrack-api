@@ -2,21 +2,21 @@
 
 This document tracks the implementation status of FinTrack Core features.
 
-## Phase 1: Foundation (Current Status: ~90%)
+## Phase 1: Foundation (Current Status: 100%)
 Core infrastructure and user management.
 
 - [x] **Project Structure**: Clean Architecture setup, folders, Makefiles.
 - [x] **Database**: Migration system (tern), Initial Schema.
 - [x] **Authentication**: Supabase integration, JWT Validator, Auth Middleware.
-- [ ] **Multi-Tenancy** (~80%)
+- [x] **Multi-Tenancy**
   - [x] Tenant Middleware (Strict Validation)
   - [x] Tenant Repository
   - [x] API: Create Tenant Endpoint (Onboarding)
-- [ ] **User Management** (~80%)
+- [x] **User Management**
   - [x] User Repository
   - [x] Auth Service (Register/Login)
-  - [ ] API: Get/Update Profile
-  - [ ] API: List User Tenants
+  - [x] API: Get/Update Profile
+  - [x] API: List User Tenants
 - [x] **Accounts**: Account Domain, Repository, Service, API Handlers.
 
 ## Phase 2: Core Classification (Next Priorities)

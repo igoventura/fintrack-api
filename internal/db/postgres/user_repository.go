@@ -98,21 +98,24 @@ func (r *UserRepository) RemoveUserFromTenant(ctx context.Context, userID, tenan
 	return nil
 }
 
-func (r *UserRepository) ListUserTenants(ctx context.Context, userID string) ([]domain.UserTenant, error) {
-	query := `SELECT user_id, tenant_id, created_at, updated_at, deactivated_at FROM users_tenants WHERE user_id = $1 AND deactivated_at IS NULL`
+func (r *UserRepository) ListUserTenants(ctx context.Context, userID string) ([]domain.Tenant, error) {
+	query := `SELECT t.id, t.name, t.created_at, t.updated_at, t.deactivated_at
+			  FROM users_tenants ut
+			  JOIN tenants t ON ut.tenant_id = t.id
+			  WHERE user_id = $1 AND ut.deactivated_at IS NULL AND t.deactivated_at IS NULL`
 	rows, err := r.db.Pool.Query(ctx, query, userID)
 	if err != nil {
 		return nil, fmt.Errorf("failed to list user tenants: %w", err)
 	}
 	defer rows.Close()
 
-	var tenants []domain.UserTenant
+	var tenants []domain.Tenant
 	for rows.Next() {
-		var ut domain.UserTenant
-		if err := rows.Scan(&ut.UserID, &ut.TenantID, &ut.CreatedAt, &ut.UpdatedAt, &ut.DeactivatedAt); err != nil {
+		var t domain.Tenant
+		if err := rows.Scan(&t.ID, &t.Name, &t.CreatedAt, &t.UpdatedAt, &t.DeactivatedAt); err != nil {
 			return nil, fmt.Errorf("failed to scan user tenant: %w", err)
 		}
-		tenants = append(tenants, ut)
+		tenants = append(tenants, t)
 	}
 	return tenants, nil
 }

@@ -111,3 +111,31 @@ func (h *UserHandler) UpdateProfile(c *gin.Context) {
 		UpdatedAt: user.UpdatedAt,
 	})
 }
+
+// ListUserTenants returns the tenants of the authenticated user
+// @Summary List user tenants
+// @Description Get the tenants of the authenticated user
+// @Tags users
+// @Produce json
+// @Security AuthPassword
+// @Success 200 {object} []dto.UserTenantResponse
+// @Failure 500 {object} ErrorResponse
+// @Router /users/tenants [get]
+func (h *UserHandler) ListUserTenants(c *gin.Context) {
+	userID := domain.GetUserID(c.Request.Context())
+	tenants, err := h.userService.ListUserTenants(c.Request.Context(), userID)
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, ErrorResponse{Error: err.Error()})
+		return
+	}
+
+	var resp []*dto.UserTenantResponse
+	for _, tenant := range tenants {
+		resp = append(resp, &dto.UserTenantResponse{
+			TenantID: tenant.ID,
+			Name:     tenant.Name,
+		})
+	}
+
+	c.JSON(http.StatusOK, resp)
+}

@@ -39,7 +39,7 @@ type UserRepository interface {
 	// Tenant associations
 	AddUserToTenant(ctx context.Context, userID, tenantID string) error
 	RemoveUserFromTenant(ctx context.Context, userID, tenantID string) error
-	ListUserTenants(ctx context.Context, userID string) ([]UserTenant, error)
+	ListUserTenants(ctx context.Context, userID string) ([]Tenant, error)
 }
 
 const userIdKey contextKey = "userID"

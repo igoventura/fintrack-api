@@ -14,3 +14,8 @@ type UserResponse struct {
 	CreatedAt time.Time `json:"created_at"`
 	UpdatedAt time.Time `json:"updated_at"`
 }
+
+type UserTenantResponse struct {
+	TenantID string `json:"tenant_id"`
+	Name     string `json:"name"`
+}

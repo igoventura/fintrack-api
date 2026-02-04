@@ -125,6 +125,13 @@ definitions:
       updated_at:
         type: string
     type: object
+  dto.UserTenantResponse:
+    properties:
+      name:
+        type: string
+      tenant_id:
+        type: string
+    type: object
   handler.ErrorResponse:
     properties:
       error:
@@ -375,6 +382,27 @@ paths:
       security:
       - AuthPassword: []
       summary: Update user profile
+      tags:
+      - users
+  /users/tenants:
+    get:
+      description: Get the tenants of the authenticated user
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/dto.UserTenantResponse'
+            type: array
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/handler.ErrorResponse'
+      security:
+      - AuthPassword: []
+      summary: List user tenants
       tags:
       - users
 securityDefinitions:

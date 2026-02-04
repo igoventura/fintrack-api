@@ -79,7 +79,7 @@ func (s *UserService) RemoveUserFromTenant(ctx context.Context, userID, tenantID
 	return nil
 }
 
-func (s *UserService) ListUserTenants(ctx context.Context, userID string) ([]domain.UserTenant, error) {
+func (s *UserService) ListUserTenants(ctx context.Context, userID string) ([]domain.Tenant, error) {
 	tenants, err := s.repo.ListUserTenants(ctx, userID)
 	if err != nil {
 		return nil, fmt.Errorf("service failed to list user tenants: %w", err)
