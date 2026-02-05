@@ -25,7 +25,7 @@ This project follows **Clean Architecture** principles to ensure isolation of bu
 │   │   │   ├── tag_handler.go
 │   │   │   ├── tenant_handler.go
 │   │   │   └── user_handler.go
-│   │   ├── middleware/     # Auth, Tenant, Logging, CORS
+│   │   ├── middleware/     # Auth, Tenant, CORS (implemented)
 │   │   ├── router/         # Route definitions and Scalar registration
 │   │   └── dto/            # Data Transfer Objects (Request/Response structs)
 │   │       ├── account_dto.go

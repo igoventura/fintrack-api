@@ -2,8 +2,10 @@ package router
 
 import (
 	"net/http"
+	"time"
 
 	"github.com/MarceloPetrucio/go-scalar-api-reference"
+	"github.com/gin-contrib/cors"
 	"github.com/gin-gonic/gin"
 	"github.com/igoventura/fintrack-api/internal/api/handler"
 	"github.com/igoventura/fintrack-api/internal/api/middleware"
@@ -11,6 +13,16 @@ import (
 
 func NewRouter(accountHandler *handler.AccountHandler, authHandler *handler.AuthHandler, categoryHandler *handler.CategoryHandler, tagHandler *handler.TagHandler, tenantHandler *handler.TenantHandler, transactionHandler *handler.TransactionHandler, authMiddleware *middleware.AuthMiddleware, tenantMiddleware *middleware.TenantMiddleware, userHandler *handler.UserHandler) *gin.Engine {
 	r := gin.Default()
+
+	// CORS configuration
+	r.Use(cors.New(cors.Config{
+		AllowOrigins:     []string{"http://localhost:4200"},
+		AllowMethods:     []string{"GET", "POST", "PUT", "DELETE", "OPTIONS"},
+		AllowHeaders:     []string{"Origin", "Content-Type", "Authorization", "X-Tenant-ID"},
+		ExposeHeaders:    []string{"Content-Length"},
+		AllowCredentials: true,
+		MaxAge:           12 * time.Hour,
+	}))
 
 	// Health check
 	r.GET("/health", func(c *gin.Context) {

@@ -102,6 +102,17 @@ FinTrack Core supports strict multi-tenancy via request headers.
 - **Context**: Successfully validated tenant IDs are injected into the request context (`domain.WithTenantID`).
 - **Usage**: Services and Repositories extract the tenant ID from the context to filter data.
 
+## CORS (Cross-Origin Resource Sharing)
+
+FinTrack Core includes CORS support to enable secure cross-origin requests from frontend applications.
+- **Middleware**: `gin-contrib/cors` is configured in the router to handle CORS requests.
+- **Allowed Origin**: `http://localhost:4200` (Angular development server).
+- **Allowed Methods**: GET, POST, PUT, DELETE, OPTIONS.
+- **Allowed Headers**: `Origin`, `Content-Type`, `Authorization`, `X-Tenant-ID`.
+- **Credentials**: Enabled to support authentication tokens and cookies.
+- **Configuration**: For production deployments, update the `AllowOrigins` in `internal/api/router/router.go` to include your production frontend domain.
+
+
 ## Soft Delete Policy
 
 FinTrack Core implements a comprehensive soft delete strategy to maintain data auditability and prevent accidental data loss.
