@@ -92,6 +92,7 @@ func NewRouter(accountHandler *handler.AccountHandler, authHandler *handler.Auth
 	{
 		users.GET("/profile", userHandler.GetProfile)
 		users.PUT("/profile", userHandler.UpdateProfile)
+		users.GET("/tenants", userHandler.ListUserTenants)
 	}
 
 	// Documentation
