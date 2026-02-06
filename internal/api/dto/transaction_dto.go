@@ -58,6 +58,7 @@ type TransactionResponse struct {
 	UpdatedBy           string                 `json:"updated_by"`
 	DeactivatedAt       *time.Time             `json:"deactivated_at,omitempty"`
 	DeactivatedBy       *string                `json:"deactivated_by,omitempty"`
+	TagIDs              []string               `json:"tag_ids,omitempty"`
 }
 
 // ToDomain maps CreateTransactionRequest to domain.Transaction.
@@ -91,7 +92,7 @@ func (req *UpdateTransactionRequest) ToDomain() *domain.Transaction {
 }
 
 // FromTransactionDomain maps domain.Transaction to TransactionResponse.
-func FromTransactionDomain(t *domain.Transaction) TransactionResponse {
+func FromTransactionDomain(t *domain.Transaction, tagIDs []string) TransactionResponse {
 	return TransactionResponse{
 		ID:                  t.ID,
 		ParentTransactionID: t.ParentTransactionID,
@@ -112,6 +113,7 @@ func FromTransactionDomain(t *domain.Transaction) TransactionResponse {
 		UpdatedBy:           t.UpdatedBy,
 		DeactivatedAt:       t.DeactivatedAt,
 		DeactivatedBy:       t.DeactivatedBy,
+		TagIDs:              tagIDs,
 	}
 }
 

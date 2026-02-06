@@ -42,7 +42,7 @@ func (h *TransactionHandler) Create(c *gin.Context) {
 		return
 	}
 
-	c.JSON(http.StatusCreated, dto.FromTransactionDomain(tx))
+	c.JSON(http.StatusCreated, dto.FromTransactionDomain(tx, req.TagIDs))
 }
 
 // GetByID returns a transaction by ID.
@@ -69,7 +69,13 @@ func (h *TransactionHandler) GetByID(c *gin.Context) {
 		return
 	}
 
-	c.JSON(http.StatusOK, dto.FromTransactionDomain(tx))
+	tagIDs, err := h.service.GetTagIDsForTransaction(c.Request.Context(), id)
+	if err != nil {
+		ErrorJSON(c, http.StatusInternalServerError, "Failed to get transaction tags")
+		return
+	}
+
+	c.JSON(http.StatusOK, dto.FromTransactionDomain(tx, tagIDs))
 }
 
 // List returns a list of transactions with optional filtering.
@@ -101,7 +107,12 @@ func (h *TransactionHandler) List(c *gin.Context) {
 
 	var response []dto.TransactionResponse
 	for _, tx := range txs {
-		response = append(response, dto.FromTransactionDomain(&tx))
+		tagIDs, err := h.service.GetTagIDsForTransaction(c.Request.Context(), tx.ID)
+		if err != nil {
+			ErrorJSON(c, http.StatusInternalServerError, "Failed to get transaction tags")
+			return
+		}
+		response = append(response, dto.FromTransactionDomain(&tx, tagIDs))
 	}
 	// Return empty array instead of null if no results
 	if response == nil {
@@ -136,16 +147,13 @@ func (h *TransactionHandler) Update(c *gin.Context) {
 	tx := req.ToDomain()
 	tx.ID = id
 
-	// Note: Update logic in Service might need refinement for tags update (currently pending in roadmap),
-	// but we pass TagIDs anyway if service handles it or ignores it.
-	// Current Service.Update implementation does NOT handle tags yet (Step 703: "Update tags? ... I'll leave Update basic for now").
-	// So we just call Update.
+	// Note: Update logic in Service handles tag replacement.
 	if err := h.service.Update(c.Request.Context(), tx, req.TagIDs); err != nil {
 		ErrorJSON(c, http.StatusInternalServerError, "Failed to update transaction")
 		return
 	}
 
-	c.JSON(http.StatusOK, dto.FromTransactionDomain(tx))
+	c.JSON(http.StatusOK, dto.FromTransactionDomain(tx, req.TagIDs))
 }
 
 // Delete removes a transaction.

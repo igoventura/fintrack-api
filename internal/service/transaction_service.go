@@ -39,6 +39,20 @@ func (s *TransactionService) List(ctx context.Context, filter domain.Transaction
 	return s.repo.List(ctx, tenantID, filter)
 }
 
+// GetTagIDsForTransaction retrieves the tag IDs associated with a transaction.
+func (s *TransactionService) GetTagIDsForTransaction(ctx context.Context, transactionID string) ([]string, error) {
+	tags, err := s.repo.ListTransactionTags(ctx, transactionID)
+	if err != nil {
+		return nil, err
+	}
+
+	tagIDs := make([]string, len(tags))
+	for i, tag := range tags {
+		tagIDs[i] = tag.ID
+	}
+	return tagIDs, nil
+}
+
 func (s *TransactionService) Create(ctx context.Context, t *domain.Transaction, tagIDs []string, installments int, isRecurring bool) error {
 	tenantID := domain.GetTenantID(ctx)
 	t.TenantID = tenantID
